@@ -2,5 +2,6 @@ contracts/.placeholder
 test/.placeholder
 build
 node_modules
+secrets.json
 .DS_Store
 .vscode
