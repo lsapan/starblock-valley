@@ -1,12 +1,11 @@
 <template lang="pug">
-    .plot
-        div {{ plot.id }}
-        div Crop: {{ plot.cropIdx }}
-        div Progress: {{ plot.progress }}
-        img(v-if='image' :src='image')
-        b-btn(variant='primary' @click='perform("plant")' :disabled='loading') Plant
-        b-btn(variant='primary' @click='perform("water")' :disabled='loading') Water
-        b-btn(variant='primary' @click='perform("harvest")' :disabled='loading') Harvest
+    .plot(:style='styles')
+        template(v-if='!performing')
+            b-dropdown.plot__action(v-if='!crop' no-caret)
+                b-dropdown-item(v-for='crop in crops' :key='crop.id' @click='perform("plant", crop.id)') {{ crop.name }}
+            .plot__action(v-else-if='plot.progress < crop.difficulty' @click='perform("water")')
+            .plot__action(v-else @click='perform("harvest")')
+        .plot__performing(v-else): img(:src='performingImages[performing]')
 </template>
 
 <script>
@@ -26,7 +25,13 @@ export default {
 
     data() {
         return {
-            loading: false,
+            performing: false,
+
+            performingImages: {
+                plant: 'https://stardewvalleywiki.com/mediawiki/images/8/87/Hoe.png',
+                water: 'https://stardewvalleywiki.com/mediawiki/images/5/51/Watering_Can.png',
+                harvest: 'https://stardewvalleywiki.com/mediawiki/images/c/cd/Scythe.png',
+            },
         }
     },
 
@@ -47,6 +52,12 @@ export default {
             return image
         },
 
+        styles() {
+            return {
+                backgroundImage: this.image ? `url(${this.image})` : '',
+            }
+        },
+
         ...mapState({
             crops: (state) => state.crops,
         }),
@@ -54,17 +65,17 @@ export default {
 
     methods: {
         async perform(action, ...args) {
-            this.loading = true
+            this.performing = action
             try {
                 await this[action](...args)
             } catch (e) {
                 console.error(e)
             }
-            this.loading = false
+            this.performing = false
         },
 
-        plant() {
-            return this.plantCrop({ cropIdx: 2, plotIdx: this.plot.id })
+        plant(cropIdx) {
+            return this.plantCrop({ cropIdx, plotIdx: this.plot.id })
         },
 
         water() {
@@ -82,6 +93,62 @@ export default {
 
 <style lang="scss" scoped>
 .plot {
-    margin-top: 10px;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+
+    &__action {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0 !important;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        ::v-deep button {
+            border-radius: 0;
+            background: transparent;
+            border: none;
+        }
+
+        ::v-deep &.show button {
+            background: rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    &__performing {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 20px;
+            animation: pulse 0.5s ease-in-out infinite;
+        }
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        width: 20px;
+    }
+
+    50% {
+        width: 30px;
+    }
 }
 </style>
