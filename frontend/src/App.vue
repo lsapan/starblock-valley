@@ -3,8 +3,18 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
     name: 'App',
+
+    methods: {
+        ...mapActions(['prepareFarm', 'connect']),
+    },
+
+    mounted() {
+        this.prepareFarm()
+    },
 }
 </script>
 
