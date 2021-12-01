@@ -18,11 +18,11 @@ const store = new Vuex.Store({
     mutations: {
         setFarm(state, { gold, crops, plots }) {
             state.prepared = true
-            state.gold = gold
+            state.gold = parseInt(gold)
             state.crops = _.keyBy(_.map(crops, (i, idx) => ({
-                id: idx, name: i.name, buyPrice: i.buyPrice, sellPrice: i.sellPrice, difficulty: i.difficulty,
+                id: idx, name: i.name, buyPrice: parseInt(i.buyPrice), sellPrice: parseInt(i.sellPrice), difficulty: parseInt(i.difficulty),
             })), 'id')
-            state.plots = _.keyBy(_.map(plots, (i, idx) => ({ id: idx, cropIdx: i.cropIdx, progress: i.progress })), 'id')
+            state.plots = _.keyBy(_.map(plots, (i, idx) => ({ id: idx, cropIdx: parseInt(i.cropIdx), progress: parseInt(i.progress) })), 'id')
         },
 
         setAccountConnected(state, connected) {
@@ -30,10 +30,10 @@ const store = new Vuex.Store({
         },
 
         updatePlot(state, data) {
-            state.gold = data.gold
+            state.gold = parseInt(data.gold)
             const plot = state.plots[parseInt(data.plotIdx)]
-            plot.cropIdx = data.cropIdx
-            plot.progress = data.progress
+            plot.cropIdx = parseInt(data.cropIdx)
+            plot.progress = parseInt(data.progress)
         },
     },
 
@@ -58,16 +58,36 @@ const store = new Vuex.Store({
             if (await connectAccount()) commit('setAccountConnected', true)
         },
 
-        plantCrop(x, { cropIdx, plotIdx }) {
-            return farm.methods.plantCrop(cropIdx, plotIdx).send({ from: farm.defaultAccount })
+        async plantCrop({ commit, state }, { cropIdx, plotIdx }) {
+            await farm.methods.plantCrop(cropIdx, plotIdx).send({ from: farm.defaultAccount })
+            commit('updatePlot', {
+                plotIdx,
+                cropIdx,
+                progress: 0,
+                gold: state.gold - state.crops[cropIdx].buyPrice,
+            })
         },
 
-        waterPlot(x, plotIdx) {
-            return farm.methods.waterPlot(plotIdx).send({ from: farm.defaultAccount })
+        async waterPlot({ commit, state }, plotIdx) {
+            await farm.methods.waterPlot(plotIdx).send({ from: farm.defaultAccount })
+            const plot = state.plots[plotIdx]
+            commit('updatePlot', {
+                plotIdx,
+                cropIdx: plot.cropIdx,
+                progress: plot.progress + 1,
+                gold: state.gold,
+            })
         },
 
-        harvestPlot(x, plotIdx) {
-            return farm.methods.harvestPlot(plotIdx).send({ from: farm.defaultAccount })
+        async harvestPlot({ commit, state }, plotIdx) {
+            await farm.methods.harvestPlot(plotIdx).send({ from: farm.defaultAccount })
+            const plot = state.plots[plotIdx]
+            commit('updatePlot', {
+                plotIdx,
+                cropIdx: -1,
+                progress: 0,
+                gold: state.gold + state.crops[plot.cropIdx].sellPrice,
+            })
         },
     },
 })
