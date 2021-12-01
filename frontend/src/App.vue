@@ -17,8 +17,10 @@
                         )
 
             .mt-4(v-if='!accountConnected')
-                b-btn(variant='primary' @click='connect') Connect
-                b-alert.mt-2(variant='info' show) Please connect a Ropsten test wallet to start farming.
+                template(v-if='hasEthereum')
+                    b-btn(variant='primary' @click='connect') Connect
+                    b-alert.mt-2(variant='info' show) Please connect a Ropsten test wallet to start farming.
+                b-alert(v-else variant='warning' show) No Ethereum wallet found, please install one to start farming.
 </template>
 
 <script>
@@ -30,6 +32,12 @@ export default {
     name: 'App',
 
     components: { Plot },
+
+    data() {
+        return {
+            hasEthereum: !!window.ethereum,
+        }
+    },
 
     computed: {
         ...mapState({
