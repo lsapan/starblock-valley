@@ -1,6 +1,7 @@
 <template lang="pug">
     .app.d-flex.justify-content-center.align-items-center
         a.github(href='https://github.com/lsapan/starblock-valley' target='_blank') GitHub
+        a.transactions(href='https://ropsten.etherscan.io/address/0x28238e476705E10de759c5b8B136E8eF5AaE19a3' target='_blank') View Transactions
 
         .text-center
             .gold.mb-4
@@ -75,6 +76,16 @@ export default {
     right: 10px;
     background: black;
     color: white !important;
+    padding: 10px 20px;
+    border-radius: 4px;
+}
+
+.transactions {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: white;
+    color: black !important;
     padding: 10px 20px;
     border-radius: 4px;
 }
