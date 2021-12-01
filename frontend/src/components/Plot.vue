@@ -7,9 +7,10 @@
                         v-for='crop in crops'
                         :key='crop.id'
                         @click='perform("plant", crop.id)'
+                        :disabled='crop.buyPrice > gold'
                     )
                         img.crop-photo(:src='cropStageImages[crop.id][0].image' width='15')
-                        | {{ crop.name }}
+                        | {{ crop.name }} ({{ crop.buyPrice }}G)
                 .plot__action(v-else-if='plot.progress < crop.difficulty' @click='perform("water")' v-b-tooltip :title='`Water ${crop.name}`')
                 .plot__action(v-else @click='perform("harvest")' v-b-tooltip :title='`Harvest ${crop.name}`')
             .plot__performing(v-else): img(:src='performingImages[performing]')
@@ -68,6 +69,7 @@ export default {
 
         ...mapState({
             accountConnected: (state) => state.accountConnected,
+            gold: (state) => state.gold,
             crops: (state) => state.crops,
         }),
     },
