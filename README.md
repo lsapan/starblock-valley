@@ -6,27 +6,27 @@ You can find the farm over here: [https://starblockvalley.lukesapan.com/](https:
 
 The deployed contract can be viewed on [Ropsten Etherscan](https://ropsten.etherscan.io/address/0x28238e476705E10de759c5b8B136E8eF5AaE19a3).
 
-#### How do I farm?
+## How do I farm?
 
 The farm consists of 9 plots arranged in a 3x3 grid. Each plot can have a crop of your choice planted in it.
 
-##### Planting
+### Planting
 
 Click on an empty plot to choose a crop to plant. Each crop costs a different amount of gold to plant which is indicated in the dropdown. The farm will be charged for the gold as soon as you plant.
 
-##### Watering
+### Watering
 
 Each crop has its own watering requirements before they will fully mature. Watering is free.
 
-##### Harvesting
+### Harvesting
 
 You can harvest the crop once it has fully matured. This will automatically sell it, increasing the farm's collective gold.
 
-#### Do I need to pay real money to farm?
+## Do I need to pay real money to farm?
 
 Absolutely not! The farm's gold is not tied to a real currency, and the dApp runs on the Ropsten testnet in order to avoid paying fees.
 
-#### What did you use to make this?
+## What did you use to make this?
 
 As you'd expect, the Ethereum smart contract is written in Solidity. The frontend is a Vue SPA that uses web3.js to keep a vuex store in sync with the contract's state.
 
