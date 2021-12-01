@@ -1,11 +1,18 @@
 <template lang="pug">
     .plot(:style='styles')
-        template(v-if='!performing')
-            b-dropdown.plot__action(v-if='!crop' no-caret)
-                b-dropdown-item(v-for='crop in crops' :key='crop.id' @click='perform("plant", crop.id)') {{ crop.name }}
-            .plot__action(v-else-if='plot.progress < crop.difficulty' @click='perform("water")')
-            .plot__action(v-else @click='perform("harvest")')
-        .plot__performing(v-else): img(:src='performingImages[performing]')
+        template(v-if='accountConnected')
+            template(v-if='!performing')
+                b-dropdown.plot__action(v-if='!crop' no-caret v-b-tooltip title='Plant')
+                    b-dropdown-item(
+                        v-for='crop in crops'
+                        :key='crop.id'
+                        @click='perform("plant", crop.id)'
+                    )
+                        img.crop-photo(:src='cropStageImages[crop.id][0].image' width='15')
+                        | {{ crop.name }}
+                .plot__action(v-else-if='plot.progress < crop.difficulty' @click='perform("water")' v-b-tooltip :title='`Water ${crop.name}`')
+                .plot__action(v-else @click='perform("harvest")' v-b-tooltip :title='`Harvest ${crop.name}`')
+            .plot__performing(v-else): img(:src='performingImages[performing]')
 </template>
 
 <script>
@@ -25,6 +32,7 @@ export default {
 
     data() {
         return {
+            cropStageImages,
             performing: false,
 
             performingImages: {
@@ -59,6 +67,7 @@ export default {
         },
 
         ...mapState({
+            accountConnected: (state) => state.accountConnected,
             crops: (state) => state.crops,
         }),
     },
@@ -140,6 +149,12 @@ export default {
             animation: pulse 0.5s ease-in-out infinite;
         }
     }
+}
+
+.crop-photo {
+    position: relative;
+    top: -7px;
+    margin-right: 5px;
 }
 
 @keyframes pulse {

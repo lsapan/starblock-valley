@@ -18,7 +18,7 @@
 
             .mt-4(v-if='!accountConnected')
                 b-btn(variant='primary' @click='connect') Connect
-                b-alert.mt-2(variant='info' show) Please connect a Ropsten test wallet to farm.
+                b-alert.mt-2(variant='info' show) Please connect a Ropsten test wallet to start farming.
 </template>
 
 <script>
