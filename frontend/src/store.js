@@ -6,6 +6,8 @@ import { farm, connectAccount } from '@/contract'
 
 Vue.use(Vuex)
 
+const txs = new Set()
+
 const store = new Vuex.Store({
     state: {
         prepared: false,
@@ -50,6 +52,7 @@ const store = new Vuex.Store({
             // Listen for changes
             farm.events.PlotUpdated({}, (err, event) => {
                 console.log('plotUpdated', event.returnValues)
+                txs.add(event.transactionHash)
                 commit('updatePlot', event.returnValues)
             })
         },
@@ -59,17 +62,19 @@ const store = new Vuex.Store({
         },
 
         async plantCrop({ commit, state }, { cropIdx, plotIdx }) {
-            await farm.methods.plantCrop(cropIdx, plotIdx).send({ from: farm.defaultAccount })
+            const response = await farm.methods.plantCrop(cropIdx, plotIdx).send({ from: farm.defaultAccount })
+            if (txs.has(response.transactionHash)) return
             commit('updatePlot', {
                 plotIdx,
                 cropIdx,
                 progress: 0,
-                gold: state.gold,
+                gold: state.gold - state.crops[cropIdx].buyPrice,
             })
         },
 
         async waterPlot({ commit, state }, plotIdx) {
-            await farm.methods.waterPlot(plotIdx).send({ from: farm.defaultAccount })
+            const response = await farm.methods.waterPlot(plotIdx).send({ from: farm.defaultAccount })
+            if (txs.has(response.transactionHash)) return
             const plot = state.plots[plotIdx]
             commit('updatePlot', {
                 plotIdx,
@@ -80,12 +85,14 @@ const store = new Vuex.Store({
         },
 
         async harvestPlot({ commit, state }, plotIdx) {
-            await farm.methods.harvestPlot(plotIdx).send({ from: farm.defaultAccount })
+            const response = await farm.methods.harvestPlot(plotIdx).send({ from: farm.defaultAccount })
+            if (txs.has(response.transactionHash)) return
+            const plot = state.plots[plotIdx]
             commit('updatePlot', {
                 plotIdx,
                 cropIdx: -1,
                 progress: 0,
-                gold: state.gold,
+                gold: state.gold + state.crops[plot.cropIdx].sellPrice,
             })
         },
     },
