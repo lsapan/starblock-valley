@@ -1,6 +1,7 @@
 contracts/.placeholder
 test/.placeholder
-build
+backend/build/contracts/*
+!backend/build/contracts/Farm.json
 node_modules
 secrets.json
 .env
