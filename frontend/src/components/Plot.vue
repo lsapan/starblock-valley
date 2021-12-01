@@ -3,6 +3,7 @@
         div {{ plot.id }}
         div Crop: {{ plot.cropIdx }}
         div Progress: {{ plot.progress }}
+        img(v-if='image' :src='image')
         b-btn(variant='primary' @click='perform("plant")' :disabled='loading') Plant
         b-btn(variant='primary' @click='perform("water")' :disabled='loading') Water
         b-btn(variant='primary' @click='perform("harvest")' :disabled='loading') Harvest
@@ -10,6 +11,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+
+import { cropStageImages } from '@/crops'
 
 export default {
     name: 'Plot',
@@ -31,6 +34,17 @@ export default {
         crop() {
             if (this.plot.cropIdx === -1) return null
             return this.crops[this.plot.cropIdx]
+        },
+
+        image() {
+            if (!this.crop) return null
+            const stages = cropStageImages[this.crop.id]
+            let image = stages[0].image
+            for (let s = 1; s < stages.length; s++) {
+                if (this.plot.progress < stages[s].progress) break
+                image = stages[s].image
+            }
+            return image
         },
 
         ...mapState({

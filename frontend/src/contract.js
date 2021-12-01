@@ -5,7 +5,7 @@ import Farm from '../../backend/build/contracts/Farm.json'
 
 export const farm = new Contract(Farm.abi, process.env.VUE_APP_CONTRACT_ADDRESS)
 
-farm.setProvider(new Web3WsProvider(`wss://ropsten.infura.io/ws/v3/${process.env.VUE_APP_PROJECT_ID}`))
+farm.setProvider(window.ethereum || new Web3WsProvider(`wss://ropsten.infura.io/ws/v3/${process.env.VUE_APP_PROJECT_ID}`))
 
 export const connectAccount = async () => {
     if (window.ethereum) {
