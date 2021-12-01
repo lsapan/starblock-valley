@@ -11,6 +11,7 @@ export const connectAccount = async () => {
     if (window.ethereum) {
         await window.ethereum.request({ method: 'eth_requestAccounts' })
         farm.setProvider(window.ethereum)
+        farm.defaultAccount = window.ethereum.selectedAddress
         return true
     }
     return false

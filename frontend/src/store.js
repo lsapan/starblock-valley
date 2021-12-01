@@ -49,12 +49,25 @@ const store = new Vuex.Store({
 
             // Listen for changes
             farm.events.PlotUpdated({}, (err, event) => {
+                console.log('plotUpdated', event.returnValues)
                 commit('updatePlot', event.returnValues)
             })
         },
 
         async connect({ commit }) {
             if (await connectAccount()) commit('setAccountConnected', true)
+        },
+
+        plantCrop(x, { cropIdx, plotIdx }) {
+            return farm.methods.plantCrop(cropIdx, plotIdx).send({ from: farm.defaultAccount })
+        },
+
+        waterPlot(x, plotIdx) {
+            return farm.methods.waterPlot(plotIdx).send({ from: farm.defaultAccount })
+        },
+
+        harvestPlot(x, plotIdx) {
+            return farm.methods.harvestPlot(plotIdx).send({ from: farm.defaultAccount })
         },
     },
 })
