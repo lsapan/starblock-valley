@@ -1,17 +1,22 @@
 <template lang="pug">
-    div
-        h1 Starblock Valley
-        h4 {{ gold }} G
-        b-btn(variant='primary' @click='connect' :disabled='accountConnected') {{ accountConnected ? "Connected" : "Connect" }}
+    .app.d-flex.justify-content-center.align-items-center
+        .text-center
+            .gold.mb-4
+                .gold__prefix G
+                .gold__amount {{ gold }}
 
-        .text-center(v-if='prepared')
-            .plots.d-inline-block
-                div(v-for='row in [0, 1, 2]' :key='row')
-                    plot(
-                        v-for='col in [0, 1, 2]'
-                        :key='(row * 3) + col'
-                        :plot='plots[(row * 3) + col]'
-                    )
+            div(v-if='prepared')
+                .plots.d-inline-block
+                    div(v-for='row in [0, 1, 2]' :key='row')
+                        plot(
+                            v-for='col in [0, 1, 2]'
+                            :key='(row * 3) + col'
+                            :plot='plots[(row * 3) + col]'
+                        )
+
+            .mt-4(v-if='!accountConnected')
+                b-btn(variant='primary' @click='connect') Connect
+                b-alert.mt-2(variant='info' show) Please connect a Ropsten test wallet to farm.
 </template>
 
 <script>
@@ -44,6 +49,34 @@ export default {
 </script>
 
 <style lang="scss">
+.app {
+    width: 100vw;
+    min-height: 100vh;
+    background-image: url('~@/assets/bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+.gold {
+    display: inline-flex;
+    background: #dc7b06;
+    border-radius: 5px;
+    padding: 3px;
+
+    &__prefix {
+        color: #6c2100;
+        padding: 0 4px;
+    }
+
+    &__amount {
+        background: #ffd284;
+        color: #800000;
+        padding: 0 5px 0 35px;
+        border-radius: 2px;
+    }
+}
+
 .plots {
     background: #ba722b;
     padding: 30px;
