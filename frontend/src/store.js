@@ -81,7 +81,6 @@ const store = new Vuex.Store({
 
         async harvestPlot({ commit, state }, plotIdx) {
             await farm.methods.harvestPlot(plotIdx).send({ from: farm.defaultAccount })
-            const plot = state.plots[plotIdx]
             commit('updatePlot', {
                 plotIdx,
                 cropIdx: -1,
