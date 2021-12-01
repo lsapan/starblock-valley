@@ -8,6 +8,8 @@ Vue.use(Vuex)
 
 const txs = new Set()
 
+const processPlots = (plots) => _.keyBy(_.map(plots, (i, idx) => ({ id: idx, cropIdx: parseInt(i.cropIdx), progress: parseInt(i.progress) })), 'id')
+
 const store = new Vuex.Store({
     state: {
         prepared: false,
@@ -24,7 +26,11 @@ const store = new Vuex.Store({
             state.crops = _.keyBy(_.map(crops, (i, idx) => ({
                 id: idx, name: i.name, buyPrice: parseInt(i.buyPrice), sellPrice: parseInt(i.sellPrice), difficulty: parseInt(i.difficulty),
             })), 'id')
-            state.plots = _.keyBy(_.map(plots, (i, idx) => ({ id: idx, cropIdx: parseInt(i.cropIdx), progress: parseInt(i.progress) })), 'id')
+            state.plots = processPlots(plots)
+        },
+
+        setPlots(state, plots) {
+            state.plots = processPlots(plots)
         },
 
         setAccountConnected(state, connected) {
@@ -55,6 +61,11 @@ const store = new Vuex.Store({
                 txs.add(event.transactionHash)
                 commit('updatePlot', event.returnValues)
             })
+        },
+
+        async refreshPlots({ commit }) {
+            const plots = await farm.methods.getPlots().call()
+            commit('setPlots', plots)
         },
 
         async connect({ commit }) {

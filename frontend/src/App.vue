@@ -50,11 +50,12 @@ export default {
     },
 
     methods: {
-        ...mapActions(['prepareFarm', 'connect']),
+        ...mapActions(['prepareFarm', 'refreshPlots', 'connect']),
     },
 
-    mounted() {
-        this.prepareFarm()
+    async mounted() {
+        await this.prepareFarm()
+        setInterval(() => this.refreshPlots(), 10000)
     },
 }
 </script>
