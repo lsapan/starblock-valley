@@ -64,7 +64,7 @@ const store = new Vuex.Store({
                 plotIdx,
                 cropIdx,
                 progress: 0,
-                gold: state.gold - state.crops[cropIdx].buyPrice,
+                gold: state.gold,
             })
         },
 
@@ -86,7 +86,7 @@ const store = new Vuex.Store({
                 plotIdx,
                 cropIdx: -1,
                 progress: 0,
-                gold: state.gold + state.crops[plot.cropIdx].sellPrice,
+                gold: state.gold,
             })
         },
     },
