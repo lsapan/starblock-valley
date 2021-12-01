@@ -1,5 +1,7 @@
 <template lang="pug">
     .app.d-flex.justify-content-center.align-items-center
+        a.github(href='https://github.com/lsapan/starblock-valley' target='_blank') GitHub
+
         .text-center
             .gold.mb-4
                 .gold__prefix G
@@ -56,6 +58,17 @@ export default {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center right;
+    position: relative;
+}
+
+.github {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: black;
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 4px;
 }
 
 .gold {
