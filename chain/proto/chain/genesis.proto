@@ -1,0 +1,11 @@
+syntax = "proto3";
+package cosmonaut.chain.chain;
+
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/cosmonaut/chain/x/chain/types";
+
+// GenesisState defines the chain module's genesis state.
+message GenesisState {
+    // this line is used by starport scaffolding # genesis/proto/state
+}
